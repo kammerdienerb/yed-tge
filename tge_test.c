@@ -92,7 +92,7 @@ int yed_plugin_boot(yed_plugin *self) {
 
     yed_plugin_set_unload_fn(Self, unload);
 
-    game = tge_new_game(Self, HEIGHT, WIDTH, FPS);
+    game = tge_new_game(Self, HEIGHT, WIDTH, FPS, TGE_TAKE_KEYS | TGE_TAKE_MOUSE);
     game->frame_callback = frame;
 
     circle_sprite = tge_new_sprite(game, 4, 4, circle_pixels, circle_mask);

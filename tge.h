@@ -183,7 +183,7 @@ static inline void _tge_paint_screen(TGE_Screen *screen) {
             if (y <= ys->term_rows && x <= ys->term_cols) {
                 yed_set_cursor(y, x);
                 yed_set_attr(attrs);
-                yed_screen_print_single_cell_glyph(half_block);
+                yed_screen_print_single_cell_glyph(&half_block);
             }
         }
     }
@@ -610,7 +610,7 @@ enum {
 typedef struct {
     TGE_Object object;
     array_t    text;
-    int        cursor_pos;
+    u64        cursor_pos;
     int        color_mode;
     int        color_field;
 } TGE_Object_Editor;
@@ -1301,7 +1301,7 @@ static inline TGE_Widget *tge_new_object_editor(TGE_Game *game, TGE_Object *obje
 
 typedef struct {
     array_t text;
-    int     cursor_pos;
+    u64     cursor_pos;
     array_t search_names;
     array_t search_objects;
     array_t in_view_objects;
@@ -1314,8 +1314,8 @@ typedef struct {
 } TGE_Canvas_Widget;
 
 typedef struct {
-    int        x;
-    int        y;
+    u64        x;
+    u64        y;
     char      *label;
     yed_attrs  attrs;
 } TGE_Canvas_Label;
@@ -1451,7 +1451,7 @@ static inline void _tge_object_finder_paint(TGE_Game *game, TGE_Widget *widget) 
     attrs.bg = game->focused_widget == widget ? 0xbbbbbb : 0x555555;
     yed_set_attr(attrs);
 
-    for (i = 0; i < array_len(finder->search_names); i += 1) {
+    for (i = 0; i < (int)array_len(finder->search_names); i += 1) {
         yed_set_cursor(top + i, widget->hitbox_left + 1);
         snprintf(buff, sizeof(buff),
                  "%s (%s) @ %p",
@@ -1480,7 +1480,7 @@ static inline void _tge_object_finder_paint(TGE_Game *game, TGE_Widget *widget) 
     attrs.bg = game->focused_widget == widget ? 0xbbbbbb : 0x555555;
     yed_set_attr(attrs);
 
-    for (i = 0; i < array_len(finder->in_view_objects); i += 1) {
+    for (i = 0; i < (int)array_len(finder->in_view_objects); i += 1) {
         yed_set_cursor(top + i, widget->hitbox_left + 1);
         snprintf(buff, sizeof(buff),
                  "(%s) @ %p",
@@ -1622,7 +1622,7 @@ static inline void _tge_canvas_widget_paint(TGE_Game *game, TGE_Widget *widget) 
         yed_screen_print_n(" ", 1);
     }
     yed_set_cursor(widget->hitbox_top, widget->hitbox_left);
-    yed_screen_print_n(canvas->title, MIN(strlen(canvas->title), widget->hitbox_width));
+    yed_screen_print_n(canvas->title, MIN((int)strlen(canvas->title), widget->hitbox_width));
 
     array_traverse(canvas->labels, label) {
         yed_set_attr(label->attrs);
